@@ -1,4 +1,5 @@
 
+    
     /*
 *	Search.java - abstract class specialising to MapSearch etc
 * Phil Green 2013 version
@@ -52,11 +53,12 @@ public RamblersSearch(TerrainMap tm,Coords s,Coords g) {
   protected ArrayList<RamblersState> successorNodes; // used in expand & vetSuccessors
 
   // run a search
-  public String runSearch() {
-
+  public String runSearch(String strat) {
+  //change of search3
     initNode = new RamblersState(start, this.get_terrainmap().getTmap()[start.gety()][start.getx()]); // create initial node
     initNode.setGlobalCost(0); // change from search2
-
+    // change from search1 - print strategy
+    System.out.println("Starting " + strat + " Search");
    
 
     open = new ArrayList<RamblersState>(); // initial open, closed
@@ -76,7 +78,7 @@ public RamblersSearch(TerrainMap tm,Coords s,Coords g) {
         System.out.println(nodestr);
       }
 
-      selectNode(); // change from search1 -selectNode selects next node given strategy,
+      selectNode(strat); // change from search1 -selectNode selects next node given strategy,
       // makes it currentNode & removes it from open
       System.out.println("Current node: " + currentNode.toString());
 
@@ -165,11 +167,17 @@ public RamblersSearch(TerrainMap tm,Coords s,Coords g) {
   }
 
   // select the next node
-  private void selectNode() {
-    
-    Astar_height();
+  //change of search3
+  private void selectNode(String strat) {
+    if (strat == "AstarManhattan")
+    AstarManhattan();
+    else if (strat == "AstarEuclidean")
+    AstarEuclidean();
+    else if (strat == "Astarheight")
+    Astarheight();
+    else
+      branchAndBound();
   }
-
   
 
 
@@ -240,7 +248,7 @@ public int height(int s,int g )
 return s-g;
 }
 //....................................
-private void Astar_Manhattan() {
+private void AstarManhattan() {
   Iterator i = open.iterator();
   RamblersState minCostNode = (RamblersState) i.next();
   while ( i.hasNext()) {
@@ -255,7 +263,7 @@ private void Astar_Manhattan() {
   open.remove(minCostNode);
 }
 //.......................
-private void Astar_Euclidean() {
+private void AstarEuclidean() {
   Iterator i = open.iterator();
   RamblersState minCostNode = (RamblersState) i.next();
   while ( i.hasNext()) {
@@ -270,7 +278,7 @@ private void Astar_Euclidean() {
   open.remove(minCostNode);
 }
 //...............................
-private void Astar_height() {
+private void Astarheight() {
   Iterator i = open.iterator();
   RamblersState minCostNode = (RamblersState) i.next();
   while ( i.hasNext()) {
